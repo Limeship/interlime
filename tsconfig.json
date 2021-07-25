@@ -8,6 +8,12 @@
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "interlime": [
+        "dist/interlime/interlime",
+        "dist/interlime"
+      ]
+    },
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,

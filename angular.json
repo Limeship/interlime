@@ -3,5 +3,37 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-  }
+    "interlime": {
+      "projectType": "library",
+      "root": "projects/interlime",
+      "sourceRoot": "projects/interlime/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/interlime/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/interlime/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/interlime/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/interlime/src/test.ts",
+            "tsConfig": "projects/interlime/tsconfig.spec.json",
+            "karmaConfig": "projects/interlime/karma.conf.js"
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "interlime"
 }
