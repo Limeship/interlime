@@ -10,7 +10,7 @@ export interface PluginDataService {
   getPluginData$<T>(
     absoluteIdentifier: string,
     pluginId: string
-  ): Observable<T>;
+  ): Observable<T | undefined>;
 
-  setPluginData<T>(absoluteIdentifier: string, pluginId: string, data: T);
+  setPluginData<T>(absoluteIdentifier: string, pluginId: string, data: T): Promise<void>;
 }

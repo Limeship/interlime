@@ -11,7 +11,7 @@ export class IlcApi {
   // TODO Refactor -> make it possible to use it without the IlcElement -> access store here directly
   resolvePluginData$<T>(id: InteropIdentifier, pluginId: string) {
     return this.getIlcElement$(id).pipe(
-      filter((ilcElement) => !!ilcElement),
+      filter((ilcElement): ilcElement is IlcElement => !!ilcElement),
       switchMap((ilcElement) => ilcElement.getPluginData$<T>(pluginId))
     );
   }
@@ -22,7 +22,7 @@ export class IlcApi {
 
   setPluginData<T>(id: InteropIdentifier, pluginId: string, data: T) {
     return this.getIlcElement$(id).pipe(
-      filter((ilcElement) => !!ilcElement),
+      filter((ilcElement): ilcElement is IlcElement => !!ilcElement),
       tap((ilcElement) => ilcElement.setPluginData(pluginId, data))
     );
   }
@@ -41,7 +41,7 @@ export class IlcApi {
     return combineLatest(ids.map((id) => this.getAbsoluteId$(id)));
   }
 
-  getIlcElement$(id: InteropIdentifier): Observable<IlcElement> {
+  getIlcElement$(id: InteropIdentifier): Observable<IlcElement | undefined> {
     return combineLatest([this.getAbsoluteId$(id), this._registry$]).pipe(
       map(([id, registry]) => registry.get(id)),
       filter((ilcElement) => !!ilcElement),
@@ -58,8 +58,9 @@ export class IlcApi {
   getDomElement$(id: InteropIdentifier): Observable<HTMLElement> {
     return combineLatest([this.getAbsoluteId$(id), this._registry$]).pipe(
       map(([absoluteId, registry]) => registry.get(absoluteId)),
-      filter((iclElement) => !!iclElement),
+      filter((ilcElement): ilcElement is IlcElement => !!ilcElement),
       map((iclElement) => iclElement.domElement),
+      filter((domElement): domElement is HTMLElement => !!domElement),
       first()
     );
   }

@@ -13,11 +13,11 @@ export interface IlcElement {
 
   getPluginData$<T>(pluginId: string): Observable<T | undefined>;
 
-  setPluginData<T>(pluginId: string, data: T);
+  setPluginData<T>(pluginId: string, data: T): Promise<void>;
 
-  registerChild(child: IlcElement);
+  registerChild(child: IlcElement): Promise<void>;
 
-  unregisterChild(child: IlcElement);
+  unregisterChild(child: IlcElement): Promise<void>;
 }
 
 export function isIlcElement(something: any): something is IlcElement {

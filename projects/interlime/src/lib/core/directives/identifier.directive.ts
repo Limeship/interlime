@@ -1,21 +1,9 @@
-import {
-  Directive,
-  ElementRef,
-  Inject,
-  Input,
-  OnDestroy,
-  OnInit,
-  Optional,
-  SkipSelf,
-} from '@angular/core';
-import { Observable, ReplaySubject, zip } from 'rxjs';
-import { first, map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import {
-  PLUGIN_DATA_SERVICE,
-  PluginDataService,
-} from '../plugin-data-service/plugin-data-service';
-import { ILC_ELEMENT_TOKEN, IlcElement } from './ilc-element';
-import { IlcApi } from '../services/public-api';
+import {Directive, ElementRef, Inject, Input, OnDestroy, OnInit, Optional, SkipSelf,} from '@angular/core';
+import {Observable, ReplaySubject, zip} from 'rxjs';
+import {first, map, shareReplay, switchMap, tap} from 'rxjs/operators';
+import {PLUGIN_DATA_SERVICE, PluginDataService,} from '../plugin-data-service/plugin-data-service';
+import {IlcApi} from '../services/public-api';
+import {ILC_ELEMENT_TOKEN, IlcElement} from './ilc-element';
 
 @Directive({
   selector: '[il-identifier]',
@@ -27,20 +15,14 @@ import { IlcApi } from '../services/public-api';
   ],
 })
 export class IdentifierDirective implements OnInit, OnDestroy, IlcElement {
-  @Input('il-identifier')
-  set identifier(identifier: string | string[]) {
-    this._identifier.next(identifier);
-    this._identifier.complete();
-  }
-
   children$: Observable<IlcElement[]>;
-  flatChildren$: Observable<IlcElement[]>;
+  // @ts-ignore
   absoluteIdentifier$: Observable<string>;
+  // flatChildren$: Observable<IlcElement[]>;
+  // @ts-ignore
   normalizedIdentifier$: Observable<string>;
   domElement?: HTMLElement;
-
   private children = new ReplaySubject<IlcElement[]>(1);
-  private _identifier = new ReplaySubject<string | string[]>(1);
 
   constructor(
     elementRef: ElementRef,
@@ -56,6 +38,14 @@ export class IdentifierDirective implements OnInit, OnDestroy, IlcElement {
     this.setupNormalizedIdentifier$();
     this.setupAbsoluteIdentifier$();
     this.setupFlatChildren$();
+  }
+
+  private _identifier = new ReplaySubject<string | string[]>(1);
+
+  @Input('il-identifier')
+  set identifier(identifier: string | string[]) {
+    this._identifier.next(identifier);
+    this._identifier.complete();
   }
 
   getPluginData$<T>(pluginId: string): Observable<T> {
@@ -114,7 +104,7 @@ export class IdentifierDirective implements OnInit, OnDestroy, IlcElement {
         Array.isArray(identifier) ? identifier.join('|') : identifier
       ),
       first(),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      shareReplay({refCount: false, bufferSize: 1})
     );
   }
 
@@ -123,8 +113,8 @@ export class IdentifierDirective implements OnInit, OnDestroy, IlcElement {
       this.absoluteIdentifier$ = this.normalizedIdentifier$;
     }
 
-    const parents: Array<IlcElement> = [];
-    for (let curr = this as IlcElement; !!curr; curr = curr.parent) {
+    const parents: IlcElement[] = [];
+    for (let curr = this as IlcElement | undefined; !!curr; curr = curr.parent) {
       parents.unshift(curr);
     }
     this.absoluteIdentifier$ = zip(
@@ -132,7 +122,7 @@ export class IdentifierDirective implements OnInit, OnDestroy, IlcElement {
     ).pipe(
       first(),
       map((identifiers) => '/' + identifiers.join('/')),
-      shareReplay({ bufferSize: 1, refCount: false })
+      shareReplay({bufferSize: 1, refCount: false})
     );
   }
 

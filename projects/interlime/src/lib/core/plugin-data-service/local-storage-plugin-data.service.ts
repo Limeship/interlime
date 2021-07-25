@@ -20,7 +20,7 @@ export class LocalStoragePluginDataService
       this.getKey(absoluteIdentifier, pluginId)
     );
     return this.getOrSetPluginSubject(absoluteIdentifier, pluginId).pipe(
-      startWith(JSON.parse(data))
+      startWith(data ? JSON.parse(data) : undefined)
     );
   }
 
